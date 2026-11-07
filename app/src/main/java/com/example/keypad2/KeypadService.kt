@@ -43,9 +43,9 @@ class KeypadService : Service() {
 
     var onStatus: ((String, Boolean) -> Unit)? = null
 
-    private val top = listOf("HOME" to 0x4A, "PGUP" to 0x4B)
-    private val g58 = listOf("F5" to 0x3E, "F6" to 0x3F, "F7" to 0x40, "F8" to 0x41)
-    private val g14 = listOf("F1" to 0x3A, "F2" to 0x3B, "F3" to 0x3C, "F4" to 0x3D)
+    private val topKeys = listOf("HOME" to 0x4A, "PGUP" to 0x4B)
+    private val keysF5to8 = listOf("F5" to 0x3E, "F6" to 0x3F, "F7" to 0x40, "F8" to 0x41)
+    private val keysF1to4 = listOf("F1" to 0x3A, "F2" to 0x3B, "F3" to 0x3C, "F4" to 0x3D)
 
     private val descriptor = byteArrayOf(
         0x05, 0x01, 0x09, 0x06, 0xA1.toByte(), 0x01, 0x85.toByte(), 0x01,
@@ -257,22 +257,22 @@ class KeypadService : Service() {
 
         when (mode) {
             1 -> {
-                // HOME/PGUP on top, then two columns: F5-F8 | F1-F4
+                // HOME/PGUP on topKeys, then two columns: F5-F8 | F1-F4
                 val topRow = LinearLayout(this).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    for ((n, c) in top) addView(makeBtn(n, c))
+                    for ((n, c) in topKeys) addView(makeBtn(n, c))
                 }
                 root.addView(topRow)
                 val cols = LinearLayout(this).apply {
                     orientation = LinearLayout.HORIZONTAL
-                    addView(column(g58))
-                    addView(column(g14))
+                    addView(column(keysF5to8))
+                    addView(column(keysF1to4))
                 }
                 root.addView(cols)
             }
-            2 -> root.addView(column(top + g58))
-            3 -> root.addView(column(top + g14))
-            else -> root.addView(column(top + g58 + g14))
+            2 -> root.addView(column(topKeys + keysF5to8))
+            3 -> root.addView(column(topKeys + keysF1to4))
+            else -> root.addView(column(topKeys + keysF5to8 + keysF1to4))
         }
 
         bar = root
